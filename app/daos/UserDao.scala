@@ -15,7 +15,9 @@ class UserDao @Inject()(
   val userTableQuery = TableQuery[UserTable]
 
   def insert (user: User) = {
-    db.run(userTableQuery += user)
+    println(s" compile heare .. user dao $user")
+
+    db.run(userTableQuery returning userTableQuery.map(_.id) += user)
   }
 
   @Singleton
