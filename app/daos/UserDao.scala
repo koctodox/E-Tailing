@@ -1,7 +1,7 @@
 package daos
 
 import javax.inject.{Inject, Singleton}
-import models.User
+import models.entitys.UserEntity
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 import scala.concurrent.ExecutionContext
@@ -14,15 +14,13 @@ class UserDao @Inject()(
   import driver.api._
   val userTableQuery = TableQuery[UserTable]
 
-  def insert (user: User) = {
-    println(s" compile heare .. user dao $user")
-
-    db.run(userTableQuery returning userTableQuery.map(_.id) += user)
+  def insert (user: UserEntity) = {
+    db.run(userTableQuery  += user)
   }
 
   @Singleton
-  final class UserTable(tag: Tag) extends Table[User](tag, "USERS") {
-    def id = column[Long]("id", O.AutoInc, O.PrimaryKey)
+  final class UserTable(tag: Tag) extends Table[UserEntity](tag, "USERS") {
+    def id = column[Long]("id", O.PrimaryKey)
 
     def is_bot = column[Boolean]("is_bot")
 
@@ -41,7 +39,8 @@ class UserDao @Inject()(
       last_name,
       username,
       language_code
-    ).shaped <> ((User.apply _).tupled, User.unapply)
+    ).shaped <> ((UserEntity.apply _).tupled, UserEntity.unapply)
 
   }
+
 }

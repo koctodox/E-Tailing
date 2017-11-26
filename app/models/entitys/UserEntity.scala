@@ -1,6 +1,6 @@
-package models
+package models.entitys
 
-case class User(
+case class UserEntity(
                  id: Long,
                  is_bot: Boolean = false,
                  first_name: String,
