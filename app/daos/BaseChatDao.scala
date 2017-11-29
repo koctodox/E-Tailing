@@ -1,10 +1,12 @@
 package daos
 
 import javax.inject.{Inject, Singleton}
+
 import models.entitys.BaseChatEntity
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
-import scala.concurrent.ExecutionContext
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BaseChatDao @Inject()(
@@ -14,8 +16,8 @@ class BaseChatDao @Inject()(
   import driver.api._
   val baseChatTableQuery = TableQuery[BaseChatTable]
 
-  def insert (baseChatEntity: BaseChatEntity) = {
-    db.run(baseChatTableQuery returning baseChatTableQuery.map(_.id) += baseChatEntity)
+  def upsert(baseChatEntity: BaseChatEntity): Future[Int] = {
+    db.run(baseChatTableQuery.insertOrUpdate(baseChatEntity))
   }
 
   def findById (id: Long) = {

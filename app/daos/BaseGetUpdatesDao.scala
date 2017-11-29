@@ -1,10 +1,12 @@
 package daos
 
 import javax.inject.{Inject, Singleton}
+
 import models.entitys.BaseGetUpdatesEntity
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
-import scala.concurrent.ExecutionContext
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BaseGetUpdatesDao @Inject()(
@@ -13,11 +15,10 @@ class BaseGetUpdatesDao @Inject()(
                                  )(implicit val ex: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
-
   val baseGetUpdatesTableQuery = TableQuery[BaseGetUpdatesTable]
 
-  def insert(baseGetUpdatesEntity: BaseGetUpdatesEntity) = {
-    db.run(baseGetUpdatesTableQuery returning baseGetUpdatesTableQuery.map(_.update_id) += baseGetUpdatesEntity)
+  def upsert(baseGetUpdatesEntity: BaseGetUpdatesEntity): Future[Int] = {
+    db.run(baseGetUpdatesTableQuery.insertOrUpdate(baseGetUpdatesEntity))
   }
 
   @Singleton

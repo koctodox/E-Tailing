@@ -1,10 +1,12 @@
 package daos
 
 import javax.inject.{Inject, Singleton}
+
 import models.entitys.UserEntity
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
-import scala.concurrent.ExecutionContext
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UserDao @Inject()(
@@ -14,8 +16,8 @@ class UserDao @Inject()(
   import driver.api._
   val userTableQuery = TableQuery[UserTable]
 
-  def insert (user: UserEntity) = {
-    db.run(userTableQuery  += user)
+  def upsert (userEntity: UserEntity): Future[Int] = {
+    db.run(userTableQuery.insertOrUpdate(userEntity))
   }
 
   @Singleton

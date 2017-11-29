@@ -1,17 +1,21 @@
 package controllers
 
 import javax.inject.Inject
-
 import models.{BaseChatModel, BaseGetUpdatesModel, BaseMessageModel, GetResults}
 import play.api.libs.functional.syntax._
 import models.entitys.UserEntity
-import play.api.libs.json.{JsPath, Reads}
+import play.api.libs.json.{JsError, JsPath, JsSuccess, Reads}
 import play.api.libs.ws.WSClient
 import play.api.mvc.{Action, Controller}
-
+import services.GetUpdatesService
 import scala.concurrent.ExecutionContext
 
-class GetUpdatesController @Inject()(ws: WSClient)(implicit val ex: ExecutionContext) extends Controller {
+class GetUpdatesController @Inject()(
+                                      ws: WSClient,
+                                      getUpdatesService: GetUpdatesService
+                                    )(implicit val ex: ExecutionContext) extends Controller {
+
+  // TODO => must user application.conf here (in baseURL)
   val baseUrl: String = "https://api.telegram.org/bot500464749:AAGjbwOZfYLXcdZ6ue-7WtCB3mBSR5jbgDA"
 
   def getUpdates = Action.async {
@@ -20,13 +24,25 @@ class GetUpdatesController @Inject()(ws: WSClient)(implicit val ex: ExecutionCon
     val request = ws.url(URL)
 
     request.get map { response =>
-      val result = response.json.validate[GetResults].get
-      Ok(s"this is the get update-method ... $result ")
+      response.json.validate[GetResults] match {
+        // TODO => must use Logger.warn here (in case error) [log the json]
+        case jsError: JsError =>
+          println(Console.RED ,"Errors: " + jsError + response.json)
+        case jsSuccess: JsSuccess[GetResults] =>
+          (jsSuccess.get.ok) match {
+            // TODO => must use Logger.warn here (in case false)
+            case false =>
+              println(Console.RED,"Error: OK is equal false")
+            case true =>
+              getUpdatesService.getUpdates(jsSuccess.get.result)
+              println(s"your operation finished")
+          }
+      }
+      Ok(s"In get updates method")
     }
-
   }
 
-// """""" JSON Deserialazation : """"""
+  // """""" JSON Deserialazation : """"""
 
   implicit val user_EntityReader: Reads[UserEntity] = (
     (JsPath \ "id").read[Long] and

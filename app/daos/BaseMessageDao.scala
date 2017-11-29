@@ -1,10 +1,12 @@
 package daos
 
 import javax.inject.{Inject, Singleton}
+
 import models.entitys.BaseMessageEntity
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
-import scala.concurrent.ExecutionContext
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BaseMessageDao @Inject()(
@@ -16,9 +18,8 @@ class BaseMessageDao @Inject()(
   import driver.api._
   val baseMessageTableQuery = TableQuery[BaseMessageTable]
 
-  def insert(baseMessageEntity: BaseMessageEntity) = {
-    println("heare in the base message insert dao ...")
-    db.run(baseMessageTableQuery returning baseMessageTableQuery.map(_.message_id) += baseMessageEntity)
+  def upsert(baseMessageEntity: BaseMessageEntity): Future[Int] = {
+    db.run(baseMessageTableQuery.insertOrUpdate(baseMessageEntity))
   }
 
   @Singleton
