@@ -17,6 +17,7 @@ class BaseMessageDao @Inject()(
   val baseMessageTableQuery = TableQuery[BaseMessageTable]
 
   def insert(baseMessageEntity: BaseMessageEntity) = {
+    println("heare in the base message insert dao ...")
     db.run(baseMessageTableQuery returning baseMessageTableQuery.map(_.message_id) += baseMessageEntity)
   }
 
@@ -78,19 +79,19 @@ class BaseMessageDao @Inject()(
       pinned_message_id
     ).shaped <> ((BaseMessageEntity.apply _).tupled, BaseMessageEntity.unapply)
 
-    def from_fk = foreignKey("FK_FromUserId_BaseMessage_Users", from_id, userDao.userTableQuery)(_.id)
+    def from_fk = foreignKey("FK_FromUserId_BaseMessage_Users", from_id, userDao.userTableQuery)(_.id.?)
 
     def chat_fk = foreignKey("FK_ChatId_BaseMessage_BaseChat", chat_id, baseChatDao.baseChatTableQuery)(_.id)
 
-    def forward_from_fk = foreignKey("FK_ForwardFromId_BaseMessage_Users", forward_from_id, userDao.userTableQuery)(_.id)
+    def forward_from_fk = foreignKey("FK_ForwardFromId_BaseMessage_Users", forward_from_id, userDao.userTableQuery)(_.id.?)
 
-    def forward_from_chat_fk = foreignKey("FK_ForwardFromChatId_BaseMessage_BaseChat", forward_from_chat_id, baseChatDao.baseChatTableQuery)(_.id)
+    def forward_from_chat_fk = foreignKey("FK_ForwardFromChatId_BaseMessage_BaseChat", forward_from_chat_id, baseChatDao.baseChatTableQuery)(_.id.?)
 
-    def reply_to_message_fk = foreignKey("FK_ReplyToMessageId_BaseMessage_BaseMessage", reply_to_message_id, baseMessageTableQuery)(_.message_id)
+    def reply_to_message_fk = foreignKey("FK_ReplyToMessageId_BaseMessage_BaseMessage", reply_to_message_id, baseMessageTableQuery)(_.message_id.?)
 
-    def left_chat_member_fk = foreignKey("FK_LeftChatMemberId_BaseMessage_Users", left_chat_member_id, userDao.userTableQuery)(_.id)
+    def left_chat_member_fk = foreignKey("FK_LeftChatMemberId_BaseMessage_Users", left_chat_member_id, userDao.userTableQuery)(_.id.?)
 
-    def pinned_message_fk = foreignKey("FK_PinnedMessageId_BaseMessage_BaseMessage", pinned_message_id, baseMessageTableQuery)(_.message_id)
+    def pinned_message_fk = foreignKey("FK_PinnedMessageId_BaseMessage_BaseMessage", pinned_message_id, baseMessageTableQuery)(_.message_id.?)
 
   }
 

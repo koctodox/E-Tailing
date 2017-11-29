@@ -18,13 +18,12 @@ alter table "BASE_GET_UPDATES" add constraint "FK_EditedChannelId_BaseGetUpdates
 
 # --- !Downs
 
+alter table "BASE_GET_UPDATES" drop constraint "FK_EditedChannelId_BaseGetUpdates_BaseMessage";
 
-alter table "BASE_MESSAGE" drop constraint "FK_EditedChannelId_BaseGetUpdates_BaseMessage";
+alter table "BASE_GET_UPDATES" drop constraint "FK_ChannelPostId_BaseGetUpdates_BaseMessage";
 
-alter table "BASE_MESSAGE" drop constraint "FK_ChannelPostId_BaseGetUpdates_BaseMessage";
+alter table "BASE_GET_UPDATES" drop constraint "FK_EditMessageId_BaseGetUpdates_BaseMessage";
 
-alter table "BASE_MESSAGE" drop constraint "FK_EditMessageId_BaseGetUpdates_BaseMessage";
-
-alter table "BASE_MESSAGE" drop constraint "FK_MessageId_BaseGetUpdates_BaseMessage";
+alter table "BASE_GET_UPDATES" drop constraint "FK_MessageId_BaseGetUpdates_BaseMessage";
 
 drop table "BASE_GET_UPDATES";

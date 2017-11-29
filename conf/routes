@@ -1,2 +1,4 @@
 
 GET     /                           controllers.HomeController.index
+
+GET     /get-updates             controllers.GetUpdatesController.getUpdates

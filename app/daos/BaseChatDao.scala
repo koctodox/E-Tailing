@@ -8,7 +8,6 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class BaseChatDao @Inject()(
-                             val baseMessageDao: BaseMessageDao,
                              protected val dbConfigProvider: DatabaseConfigProvider
                            )(implicit val ex: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
 
@@ -29,15 +28,13 @@ class BaseChatDao @Inject()(
 
     def chat_type = column[String]("chat_type")
 
-    def pinned_message_id = column[Option[Long]]("pinned_message")
+    def title = column[Option[String]]("title")
 
     def * = (
       id,
       chat_type,
-      pinned_message_id
+      title
     ).shaped <> ((BaseChatEntity.apply _).tupled, BaseChatEntity.unapply)
-
-    def pinned_message_fk = foreignKey("FK_PinnedMessageId_BaseMessage_BaseChat", pinned_message_id, baseMessageDao.baseMessageTableQuery)(_.message_id)
   }
 
 }

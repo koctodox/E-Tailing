@@ -45,13 +45,13 @@ class BaseGetUpdatesDao @Inject()(
       edited_channel_post_id
     ).shaped <> ((BaseGetUpdatesEntity.apply _).tupled, BaseGetUpdatesEntity.unapply)
 
-    def message_fk = foreignKey("FK_MessageId_BaseGetUpdates_BaseMessage", message_id, baseMessageDao.baseMessageTableQuery)(_.message_id)
+    def message_fk = foreignKey("FK_MessageId_BaseGetUpdates_BaseMessage", message_id, baseMessageDao.baseMessageTableQuery)(_.message_id.?)
 
-    def edited_message_fk = foreignKey("FK_EditMessageId_BaseGetUpdates_BaseMessage", edited_message_id, baseMessageDao.baseMessageTableQuery)(_.message_id)
+    def edited_message_fk = foreignKey("FK_EditMessageId_BaseGetUpdates_BaseMessage", edited_message_id, baseMessageDao.baseMessageTableQuery)(_.message_id.?)
 
-    def channel_post_fk = foreignKey("FK_ChannelPostId_BaseGetUpdates_BaseMessage", channel_post_id, baseMessageDao.baseMessageTableQuery)(_.message_id)
+    def channel_post_fk = foreignKey("FK_ChannelPostId_BaseGetUpdates_BaseMessage", channel_post_id, baseMessageDao.baseMessageTableQuery)(_.message_id.?)
 
-    def edited_channel_post_fk = foreignKey("FK_EditedChannelId_BaseGetUpdates_BaseMessage", edited_channel_post_id, baseMessageDao.baseMessageTableQuery)(_.message_id)
+    def edited_channel_post_fk = foreignKey("FK_EditedChannelId_BaseGetUpdates_BaseMessage", edited_channel_post_id, baseMessageDao.baseMessageTableQuery)(_.message_id.?)
 
   }
 

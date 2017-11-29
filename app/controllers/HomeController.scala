@@ -1,15 +1,16 @@
 package controllers
 
 import javax.inject._
-import daos.UserDao
 import play.api.mvc._
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class HomeController @Inject()(userDao: UserDao) extends Controller {
+class HomeController @Inject()(
+                                implicit val ex: ExecutionContext
+                              ) extends Controller {
 
   def index = Action {
-
-    Ok("Server is Up...")
+    Ok("Server is up ...")
   }
 
 }
