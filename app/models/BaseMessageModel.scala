@@ -12,12 +12,12 @@ case class BaseMessageModel(
                              forward_from_message_id: Option[Long] = None,
                              forward_signature: Option[String] = None,
                              forward_date: Option[Long] = None,
-                             reply_to_message: Option[BaseMessageModel] = None,
+                             reply_to_message: Option[BaseLoopMessageModel] = None,
                              edit_date: Option[Long] = None,
                              author_signature: Option[String] = None,
                              text: Option[String] = None,
                              left_chat_member: Option[UserEntity] = None,
-                             pinned_message: Option[BaseMessageModel] = None
+                             pinned_message: Option[BaseLoopMessageModel] = None
                            )
 
 //More helps in:
